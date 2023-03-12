@@ -5,6 +5,7 @@ import time
 import re
 from config import *
 
+
 def DataBase_additem(database_id, body_properties, station):
     body = {
         'parent': {'type': 'database_id', 'database_id': database_id},
@@ -24,11 +25,14 @@ def film_info2(movie_url):
     # 目前想改进的有title，类型，导演
 
     url = movie_url
-    res = requests.get(url, headers=headers)
+    res = requests.get(url, headers=headers, allow_redirects=False)
+    url = res.headers['Location'] if res.status_code == 302 else url
+    print(url)
+    res = requests.get(url, headers=headers, allow_redirects=False)
     bstitle = BeautifulSoup(res.text, 'html.parser')
 
-    moive_content = bstitle.find_all('div', id='content')[0]
-
+    moive_content = bstitle.find_all('div', id='content')
+    moive_content = moive_content[0]
     # 电影名称与年份
     title = moive_content.find('h1')
     title = title.find_all('span')
@@ -59,7 +63,7 @@ def download_picture(url):
         "Host": "movie.douban.com",
         "Referer": "https://movie.douban.com/top250?start=225&filter=",
         "Upgrade-Insecure-Requests": "1",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.84 Safari/537.36",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.69",
     }
     # 获取网页的源代码
     r = requests.get(url, headers=headers)
@@ -78,13 +82,13 @@ def download_picture(url):
     return picture_link_list
 
 
-
 notion_moives = NotionAPI.DataBase_item_query(databaseid)
 for item in notion_moives:
     print(item)
     # title = item['properties']['名称']['title'][0]['plain_text']
     watch_time = item['properties']['观看时间']['date']['start']
     movie_url = item['properties']['影片链接']['url']
+    movie_url = movie_url.replace('http://movie.douban.com/subject/', 'https://movie.douban.com/subject/')
     comment = ''
     title, movie_type, director = film_info2(movie_url)
     cover_url = download_picture(movie_url)

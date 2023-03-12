@@ -6,6 +6,7 @@ import NotionAPI
 import time
 from config import *
 
+
 def film_info1(item):
     # 名称title 封面链接cover_url 观影时间watch_time 电影链接movive_url 评分score 评论 comment
     pattern1 = re.compile(r'(?<=src=").+(?=")', re.I)  # 匹配海报链接
@@ -60,6 +61,7 @@ def film_info2(movie_url):
 
     url = movie_url[:4] + 's' + movie_url[4:]
     res = requests.get(url, headers=headers)
+    print(res)
     bstitle = BeautifulSoup(res.text, 'html.parser')
 
     moive_content = bstitle.find_all('div', id='content')[0]

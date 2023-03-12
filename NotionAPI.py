@@ -90,6 +90,8 @@ def get_page_information(page_id):
 # 而内容是对应每条数据的属性值（没有数据条目限制，完全遍历你的数据库的每一条数据）。
 
 def DataBase_item_query(query_database_id):
+    proxies = {'http': "http://127.0.0.1:7890",
+               'https': "http://127.0.0.1:7890"}
     url_notion_block = 'https://api.notion.com/v1/databases/' + query_database_id + '/query'
     res_notion = requests.post(url_notion_block, headers=headers)
     S_0 = res_notion.json()
@@ -100,7 +102,7 @@ def DataBase_item_query(query_database_id):
             body = {
                 'start_cursor': res_travel[-1]['id']
             }
-            res_notion_plus = requests.post(url_notion_block, headers=headers, json=body)
+            res_notion_plus = requests.post(url_notion_block, headers=headers, json=body, verify=False)
             S_0plus = res_notion_plus.json()
             res_travel_plus = S_0plus['results']
             for i in res_travel_plus:
