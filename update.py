@@ -63,7 +63,7 @@ def download_picture(url):
         "Host": "movie.douban.com",
         "Referer": "https://movie.douban.com/top250?start=225&filter=",
         "Upgrade-Insecure-Requests": "1",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.69",
+        "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
     }
     # 获取网页的源代码
     r = requests.get(url, headers=headers)
@@ -71,6 +71,8 @@ def download_picture(url):
     soup = BeautifulSoup(r.text, "lxml")
     # 获取网页中的电影图片
     content = soup.find('div', class_='article')
+    if content is None:
+        return ""
     images = content.find_all('img')
     # 获取电影图片的名称和下载地址
     # picture_name_list = [image['alt'] for image in images]
