@@ -85,8 +85,12 @@ def film_info2(movie_url):
     movie_type = re.findall(pattern_type, info)[0].replace(" ", "").split("/")
     # print(movie_type)
     pattern_director = re.compile(r'(?<=导演: )[\u4e00-\u9fa5 /]+', re.I)
-    director = re.findall(pattern_director, info)[0].replace(" ", "").split("/")
+    # print(re.findall(pattern_director, info))
+    if len(re.findall(pattern_director, info))>0:
+        director = re.findall(pattern_director, info)[0].replace(" ", "").split("/")
     # print(director)
+    else:
+        director = ""
 
     return title, movie_type, director
 
