@@ -94,6 +94,7 @@ def DataBase_item_query(query_database_id):
                'https': "http://127.0.0.1:7890"}
     url_notion_block = 'https://api.notion.com/v1/databases/' + query_database_id + '/query'
     res_notion = requests.post(url_notion_block, headers=headers)
+    print(res_notion.json)
     S_0 = res_notion.json()
     res_travel = S_0['results']
     if_continue = len(res_travel)
@@ -122,11 +123,11 @@ def DataBase_additem(database_id, body_properties, station):
 
     url_notion_additem = 'https://api.notion.com/v1/pages'
     notion_additem = requests.post(url_notion_additem, headers=headers, json=body)
-
+    
     if notion_additem.status_code == 200:
         print(station + '·更新成功')
     else:
-        print(station + '·更新失败')
+        print(notion_additem.status_code + '·更新失败')
 
 
 # 6.1 获取指定页面属性的指定属性值：pageid_information_pick(page_id,label)
