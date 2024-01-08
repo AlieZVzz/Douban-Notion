@@ -366,6 +366,4 @@ if __name__ == "__main__":
             print(body)
             NotionAPI.DataBase_additem(book_database, body, title)
             time.sleep(3)
-    with open("start.txt") as f:
-        print(f.read())                    
         
