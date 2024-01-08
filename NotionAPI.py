@@ -1,3 +1,7 @@
+import requests
+import os
+import yaml
+
 """
     body = {
      'properties':{
@@ -15,33 +19,14 @@
 }
 """
 
-"""
-    body = {
-     'properties':{
-          '我是number（这里对应你database的属性名称）':{'type': 'number', 'number': int(数据)},
-          '我是title':{
-                'id': 'title', 'type': 'title', 
-                'title': [{'type': 'text', 'text': {'content': str(数据)}, 'plain_text': str(数据)}]
-            },
-          '我是select': {'type': 'select', 'select': {'name': str(数据)}},
-          '我是date': {'type': 'date', 'date': {'start': str(数据), 'end': None}},
-          '我是Text': {'type': 'rich_text', 'rich_text': [{'type': 'text', 'text': {'content': str(数据)},  'plain_text': str(数据)}]},
-          '我是multi_select': {'type': 'multi_select', 'multi_select': [{'name': str(数据)}, {'name': str(数据)}]}
-          '我是checkbox':{'type': 'checkbox', 'checkbox': bool(数据)}
-     }
-}
-"""
-
-import requests
-from config import notion_api
-
 # notion基本参数
-
+fs = open(os.path.join("./", "config.yaml"), encoding="UTF-8")
+config = yaml.safe_load(fs)
 headers = {
     "accept": "application/json",
     "Notion-Version": "2022-06-28",
     "content-type": "application/json",
-    "authorization": notion_api
+    "authorization": config["notion_api"]
 }
 
 
@@ -94,6 +79,7 @@ def DataBase_item_query(query_database_id):
                'https': "http://127.0.0.1:7890"}
     url_notion_block = 'https://api.notion.com/v1/databases/' + query_database_id + '/query'
     res_notion = requests.post(url_notion_block, headers=headers)
+    print(res_notion.json)
     S_0 = res_notion.json()
     res_travel = S_0['results']
     if_continue = len(res_travel)
@@ -102,7 +88,7 @@ def DataBase_item_query(query_database_id):
             body = {
                 'start_cursor': res_travel[-1]['id']
             }
-            res_notion_plus = requests.post(url_notion_block, headers=headers, json=body, verify=False)
+            res_notion_plus = requests.post(url_notion_block, headers=headers, json=body)
             S_0plus = res_notion_plus.json()
             res_travel_plus = S_0plus['results']
             for i in res_travel_plus:
@@ -126,7 +112,7 @@ def DataBase_additem(database_id, body_properties, station):
     if notion_additem.status_code == 200:
         print(station + '·更新成功')
     else:
-        print(station + '·更新失败')
+        print(notion_additem.status_code + '·更新失败')
 
 
 # 6.1 获取指定页面属性的指定属性值：pageid_information_pick(page_id,label)
