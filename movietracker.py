@@ -175,12 +175,12 @@ def film_info1(item):
 
     time = item["published"]
     pattern2 = re.compile(r'(?<=. ).+\d{4}', re.S)  # 匹配时间
-    month_satandard = {'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
+    month_standard = {'Jan': '01', 'Feb': '02', 'Mar': '03', 'Apr': '04', 'May': '05', 'Jun': '06',
                        'Jul': '07', 'Aug': '08', 'Sep': '09', 'Oct': '10', 'Nov': '11', 'Dec': '12'}
     time = re.findall(pattern2, time)[0]
     time = time.split(" ")
     day = time[0]
-    month = month_satandard[time[1]]
+    month = month_standard[time[1]]
     year = time[2]
     watch_time = str(year) + "-" + str(month) + "-" + str(day)
     # logger.info(watch_time)
