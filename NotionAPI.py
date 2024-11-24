@@ -2,6 +2,8 @@ import requests
 import os
 import yaml
 
+from movietracker import logger
+
 """
     body = {
      'properties':{
@@ -20,7 +22,9 @@ import yaml
 """
 
 # notion基本参数
-fs = open(os.path.join("./", "config.yaml"), encoding="UTF-8")
+script_dir = os.path.dirname(os.path.abspath(__file__))
+config_path = os.path.join(script_dir, 'config.yaml')
+fs = open(config_path, encoding="UTF-8")
 config = yaml.safe_load(fs)
 headers = {
     "accept": "application/json",
@@ -49,9 +53,9 @@ def updata_page_properties(page_id, body, station):
     notion = requests.patch(url, headers=headers, json=body)
 
     if notion.status_code == 200:
-        print(station + '·更新成功')
+        logger.info(station + '·更新成功')
     else:
-        print(station + '·更新失败')
+        logger.warn(station + '·更新失败')
 
     return 0
 
@@ -79,7 +83,9 @@ def DataBase_item_query(query_database_id):
                'https': "http://127.0.0.1:7890"}
     url_notion_block = 'https://api.notion.com/v1/databases/' + query_database_id + '/query'
     res_notion = requests.post(url_notion_block, headers=headers)
-    print(res_notion.json)
+    logger.info(res_notion.content.decode("utf-8"))
+    # print(res_notion.content.decode("utf-8"))
+    # print(res_notion.status_code)
     S_0 = res_notion.json()
     res_travel = S_0['results']
     if_continue = len(res_travel)
@@ -88,7 +94,11 @@ def DataBase_item_query(query_database_id):
             body = {
                 'start_cursor': res_travel[-1]['id']
             }
+            # print(body)
+            # print(url_notion_block)
             res_notion_plus = requests.post(url_notion_block, headers=headers, json=body)
+            # print(res_notion_plus.content)
+            # print(res_notion_plus.status_code)
             S_0plus = res_notion_plus.json()
             res_travel_plus = S_0plus['results']
             for i in res_travel_plus:
